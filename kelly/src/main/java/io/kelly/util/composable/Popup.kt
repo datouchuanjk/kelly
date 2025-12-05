@@ -1,4 +1,4 @@
-package io.kelly.util.compose
+package io.kelly.util.composable
 
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntRect

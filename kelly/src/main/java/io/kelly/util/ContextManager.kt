@@ -6,8 +6,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 
-fun Application.startDevelop() {
-    ContextManager.init(this)
+fun Context.initKelly() {
+    ContextManager.init(applicationContext as Application)
 }
 
 internal object ContextManager {
@@ -17,16 +17,12 @@ internal object ContextManager {
     internal var resumedActivity by WeakDelegate<Activity>()
         private set
 
-
     val sharedPreferences: SharedPreferences by lazy {
-        if (!::app.isInitialized) {
-            error("ContextManager must be initialized first!")
-        }
         app.getSharedPreferences("_sp", Context.MODE_PRIVATE)
     }
 
     fun init(application: Application) {
-        this.app = application
+        app = application
         application.registerActivityLifecycleCallbacks(ActivityLifecycleCallbacksImpl)
     }
 

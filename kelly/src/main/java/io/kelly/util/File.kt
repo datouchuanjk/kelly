@@ -3,8 +3,6 @@ package io.kelly.util
 import android.net.Uri
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.security.MessageDigest
@@ -13,7 +11,6 @@ import java.util.UUID
 val File.mimeType: String?
     get() = MimeTypeMap.getSingleton()
         .getMimeTypeFromExtension(extension.lowercase())
-
 
 fun File.ensureExists(requireDirectory: Boolean): Boolean {
     if (exists()) {
@@ -45,23 +42,19 @@ val File.totalSize: Long
         return size
     }
 
-suspend fun File.calculateMd5(): String = withContext(Dispatchers.IO) {
-    if (!exists() || !isFile) return@withContext ""
-    val digest = MessageDigest.getInstance("MD5")
-    val buffer = ByteArray(8192)
-    try {
-        FileInputStream(this@calculateMd5).use { input ->
+val File.md5: String
+    get() {
+        if (!exists() || !isFile) return ""
+        val digest = MessageDigest.getInstance("MD5")
+        val buffer = ByteArray(8192)
+        FileInputStream(this).use { input ->
             var bytesRead: Int
             while (input.read(buffer).also { bytesRead = it } != -1) {
                 digest.update(buffer, 0, bytesRead)
             }
         }
-        return@withContext digest.digest(). joinToString("") { "%02x".format(it) }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        return@withContext ""
+        return digest.digest().joinToString("") { "%02x".format(it) }
     }
-}
 
 fun File.toProviderUri(
     authority: String = "${ContextManager.app.packageName}.fileProvider"

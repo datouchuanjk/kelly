@@ -3,6 +3,7 @@ package io.kelly.util
 import android.content.res.Resources
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 
@@ -28,7 +29,6 @@ internal object SingleToast {
 
     fun toast(text: String?, duration: Int) {
         val validText = text?.trim()?.takeIf { it.isNotEmpty() } ?: return
-
         if (Looper.myLooper() == Looper.getMainLooper()) {
             showToast(validText, duration)
         } else {

@@ -1,4 +1,4 @@
-package io.kelly.util.compose
+package io.kelly.util.composable
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,7 +23,6 @@ fun Modifier.clickableNoRipple(
         onClick = onClick
     )
 }
-
 
 fun Modifier.onKeyDelEvent(
     enabled: Boolean = true,

@@ -1,6 +1,7 @@
 package io.kelly.util
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty

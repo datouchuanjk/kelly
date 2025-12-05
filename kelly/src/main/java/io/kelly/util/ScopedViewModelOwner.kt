@@ -1,6 +1,7 @@
 package io.kelly.util
 
 import android.os.Bundle
+import androidx.core.os.bundleOf
 import androidx.lifecycle.DEFAULT_ARGS_KEY
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.Lifecycle
@@ -20,67 +21,46 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 
 class ScopedViewModelOwner(
-    savedState: Bundle? = null
-) : ViewModelStoreOwner, SavedStateRegistryOwner, LifecycleOwner,
+    bundle: Bundle = bundleOf()
+) : ViewModelStoreOwner,
+    SavedStateRegistryOwner,
+    LifecycleOwner,
     HasDefaultViewModelProviderFactory {
 
     private val _lifecycleRegistry = LifecycleRegistry(this)
     private val _savedStateController = SavedStateRegistryController.create(this)
     private val _viewModelStore = ViewModelStore()
-
-    private var _pendingDefaultArgs: Bundle? = null
-
-    fun setBundle(args: Bundle?) {
-        if (_pendingDefaultArgs != args) {
-            _pendingDefaultArgs = args
-        }
+    private val _creationExtras = MutableCreationExtras().apply {
+        set(SAVED_STATE_REGISTRY_OWNER_KEY, this@ScopedViewModelOwner)
+        set(VIEW_MODEL_STORE_OWNER_KEY, this@ScopedViewModelOwner)
+        set(DEFAULT_ARGS_KEY, bundle)
     }
+    private val _factory = SavedStateViewModelFactory(
+        application = null,
+        owner = this,
+        defaultArgs = bundle
+    )
 
-    private val _factory by lazy {
-        SavedStateViewModelFactory(
-            application = null,
-            owner = this,
-            defaultArgs = null
-        )
-    }
+    override val lifecycle: Lifecycle get() = _lifecycleRegistry
+    override val savedStateRegistry: SavedStateRegistry get() = _savedStateController.savedStateRegistry
+    override val viewModelStore: ViewModelStore get() = _viewModelStore
+    override val defaultViewModelCreationExtras: CreationExtras get() = _creationExtras
+    override val defaultViewModelProviderFactory: ViewModelProvider.Factory get() = _factory
 
     init {
         _savedStateController.performAttach()
         enableSavedStateHandles()
-        _savedStateController.performRestore(savedState)
-
+        _savedStateController.performRestore(bundle)
         _lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         _lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
     }
 
-    override val defaultViewModelCreationExtras: CreationExtras
-        get() {
-            val extras = MutableCreationExtras().apply {
-                set(SAVED_STATE_REGISTRY_OWNER_KEY, this@ScopedViewModelOwner)
-                set(VIEW_MODEL_STORE_OWNER_KEY, this@ScopedViewModelOwner)
 
-                _pendingDefaultArgs?.let { args ->
-                    set(DEFAULT_ARGS_KEY, args)
-                    _pendingDefaultArgs = null
-                }
-            }
-            return extras
-        }
-
-    override val viewModelStore: ViewModelStore get() = _viewModelStore
-    override val savedStateRegistry: SavedStateRegistry get() = _savedStateController.savedStateRegistry
-    override val lifecycle: Lifecycle get() = _lifecycleRegistry
-    override val defaultViewModelProviderFactory: ViewModelProvider.Factory get() = _factory
-
-    fun saveState(): Bundle {
-        val outBundle = Bundle()
-        _savedStateController.performSave(outBundle)
-        return outBundle
-    }
 
     fun clear() {
+        _lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        _lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
         _lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
         viewModelStore.clear()
-        _pendingDefaultArgs = null
     }
 }

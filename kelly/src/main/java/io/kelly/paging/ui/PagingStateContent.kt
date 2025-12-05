@@ -29,7 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.kelly.R
-import io.kelly.util.compose.clickableNoRipple
+import io.kelly.util.composable.clickableNoRipple
 
 interface PagingStateContent {
 

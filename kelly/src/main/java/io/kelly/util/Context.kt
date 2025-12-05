@@ -8,17 +8,14 @@ import android.os.Build
 import android.os.Process
 import android.util.DisplayMetrics
 
-
 val Context.isMainProcess: Boolean
     get() = packageName == processName
-
 
 val Context.processName: String?
     get() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             return Application.getProcessName()
         }
-
         return getSystemService(ActivityManager::class.java)
             ?.runningAppProcesses
             ?.find { it.pid == Process.myPid() }
@@ -53,7 +50,6 @@ private fun Context.getPackageInfoCompat() =
     } else {
         packageManager.getPackageInfo(packageName, 0)
     }
-
 
 fun Context.createDensityContext(designWidthDp: Float): Context {
     val widthPixels = resources.displayMetrics.widthPixels

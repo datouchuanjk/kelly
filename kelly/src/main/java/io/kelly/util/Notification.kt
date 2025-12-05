@@ -1,12 +1,14 @@
 package io.kelly.util
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Notification
+import android.os.Build
 import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresPermission
 import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-
 
 fun buildNotification(
     channelId: String,
@@ -27,27 +29,23 @@ fun buildNotification(
         .build()
 }
 
-@SuppressLint("MissingPermission")
+@RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
 fun Notification.notify(id: Int) {
-    try {
-        val manager = NotificationManagerCompat.from(ContextManager.app)
-        if (!areNotificationsEnabled(channelId)) {
+    val manager = NotificationManagerCompat.from(ContextManager.app)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        areNotificationsEnabled(channelId)
+    } else {
+        areNotificationsEnabled()
+    }.let {
+        if (!it) {
             return
         }
-        manager.notify(id, this)
-    } catch (e: SecurityException) {
-        e.printStackTrace()
-    } catch (e: Exception) {
-        e.printStackTrace()
     }
+    manager.notify(id, this)
 }
 
 fun cancelNotification(id: Int) {
-    try {
-        NotificationManagerCompat.from(ContextManager.app).cancel(id)
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
+    NotificationManagerCompat.from(ContextManager.app).cancel(id)
 }
 
 fun buildNotificationChannel(
@@ -58,14 +56,11 @@ fun buildNotificationChannel(
     buildAction: NotificationChannelCompat.Builder.() -> Unit = {}
 ) {
     val manager = NotificationManagerCompat.from(ContextManager.app)
-
     val channelBuilder = NotificationChannelCompat.Builder(channelId, importance)
         .setName(channelName)
-
     if (description != null) {
         channelBuilder.setDescription(description)
     }
-
     manager.createNotificationChannel(
         channelBuilder
             .apply(buildAction)

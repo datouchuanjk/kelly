@@ -1,7 +1,5 @@
-package io.kelly.util
-
+package  io.kelly.util
 import kotlin.time.Duration
-
 
 fun Duration.formattedAdvanced(
     dayUnit: String? = "d",
@@ -10,44 +8,31 @@ fun Duration.formattedAdvanced(
     secondUnit: String? = "s",
     separator: String = " ",
 ): String {
-    val absDuration = if (isNegative()) -this else this
-    val totalSeconds = absDuration.inWholeSeconds
-    if (dayUnit == null && hourUnit == null && minuteUnit == null && secondUnit == null) {
-        return "${totalSeconds}s"
-    }
+    val absDuration = this.absoluteValue
+    return absDuration.toComponents { days, hours, minutes, seconds, _ ->
+        val parts = buildList {
+            if (dayUnit != null && days > 0) {
+                add("$days$dayUnit")
+            }
 
-    val parts = mutableListOf<String>()
-    var remainingSeconds = totalSeconds
+            if (hourUnit != null && (hours > 0 || isNotEmpty())) {
+                add("$hours$hourUnit")
+            }
 
-    if (dayUnit != null) {
-        val days = remainingSeconds / (24 * 3600)
-        if (days > 0) {
-            parts.add("${days}$dayUnit")
-            remainingSeconds %= (24 * 3600)
+            if (minuteUnit != null && (minutes > 0 || isNotEmpty())) {
+                add("$minutes$minuteUnit")
+            }
+
+            if (secondUnit != null) {
+                if (seconds > 0 || isNotEmpty()) {
+                    add("$seconds$secondUnit")
+                } else if (isEmpty()) {
+                    add("0$secondUnit")
+                }
+            }
         }
-    }
 
-    if (hourUnit != null) {
-        val hours = remainingSeconds / 3600
-        if (hours > 0 || parts.isNotEmpty()) {
-            parts.add("${hours}$hourUnit")
-            remainingSeconds %= 3600
-        }
+        // 4. 拼接
+        parts.joinToString(separator)
     }
-
-    if (minuteUnit != null) {
-        val minutes = remainingSeconds / 60
-        if (minutes > 0 || parts.isNotEmpty()) {
-            parts.add("${minutes}$minuteUnit")
-            remainingSeconds %= 60
-        }
-    }
-
-    if (secondUnit != null) {
-        if (remainingSeconds > 0 || parts.isEmpty()) {
-            parts.add("${remainingSeconds}$secondUnit")
-        }
-    }
-
-    return if (parts.isEmpty()) "" else parts.joinToString(separator)
 }

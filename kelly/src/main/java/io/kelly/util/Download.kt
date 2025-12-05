@@ -7,8 +7,7 @@ import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
-
-fun String.downloadToFile(outputFile: File) {
+fun String.downloadTo(outputFile: File) {
     var connection: HttpURLConnection? = null
     try {
         val url = URL(this)
@@ -19,7 +18,7 @@ fun String.downloadToFile(outputFile: File) {
         connection.requestMethod = "GET"
         connection.connect()
         if (connection.responseCode != HttpURLConnection.HTTP_OK) {
-            throw IOException("Server returned HTTP ${connection.responseCode}: ${connection.responseMessage}")
+            throw IOException()
         }
         connection.inputStream.use { input ->
             outputFile.outputStream().use { output ->
@@ -36,9 +35,8 @@ fun String.downloadToFile(outputFile: File) {
     }
 }
 
-
-fun Uri.downloadToFile(outputFile: File) {
-    val input = inputStream ?: throw FileNotFoundException("Cannot open stream for Uri: $this")
+fun Uri.downloadTo(outputFile: File) {
+    val input = inputStream ?: throw FileNotFoundException()
     try {
         input.use { inputStream ->
             outputFile.outputStream().use { outputStream ->

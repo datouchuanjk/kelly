@@ -1,4 +1,4 @@
-package io.kelly.util.compose
+package io.kelly.util.composable
 
 import android.view.Window
 import android.view.WindowManager

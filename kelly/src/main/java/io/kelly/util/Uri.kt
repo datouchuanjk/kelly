@@ -8,23 +8,19 @@ import android.provider.OpenableColumns
 import java.io.InputStream
 import java.io.OutputStream
 
-
 fun Uri.insert(block: ContentValues.() -> Unit): Uri? {
     val values = ContentValues().apply(block)
     return ContextManager.app.contentResolver.insert(this, values)
 }
 
-
 fun Uri.delete(where: String? = null, selectionArgs: Array<String>? = null): Int {
     return ContextManager.app.contentResolver.delete(this, where, selectionArgs)
 }
-
 
 fun Uri.update(where: String? = null, selectionArgs: Array<String>? = null, block: ContentValues.() -> Unit): Int {
     val values = ContentValues().apply(block)
     return ContextManager.app.contentResolver.update(this, values, where, selectionArgs)
 }
-
 
 fun Uri.query(
     projection: Array<String>? = null,

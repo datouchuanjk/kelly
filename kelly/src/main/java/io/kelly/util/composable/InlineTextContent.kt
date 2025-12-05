@@ -1,4 +1,4 @@
-package io.kelly.util.compose
+package io.kelly.util.composable
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -22,13 +22,13 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun InlineTextContent(
+fun inlineTextContent(
     @DrawableRes id: Int,
     width: Dp,
     height: Dp,
     paddingValues: PaddingValues = PaddingValues(0.dp),
     tint: Color? = null,
-    align: PlaceholderVerticalAlign = PlaceholderVerticalAlign.Center
+    placeholderVerticalAlign: PlaceholderVerticalAlign = PlaceholderVerticalAlign.Center
 ): InlineTextContent {
 
     val density = LocalDensity.current
@@ -47,7 +47,7 @@ fun InlineTextContent(
         placeholder = Placeholder(
             width = widthSp,
             height = heightSp,
-            placeholderVerticalAlign = align
+            placeholderVerticalAlign = placeholderVerticalAlign
         ),
         children = {
             Box(

@@ -10,14 +10,10 @@ import androidx.core.app.NotificationManagerCompat
 val Map<String, @JvmSuppressWildcards Boolean>.isAllGranted get() = values.all { it }
 
 fun isPermissionGranted(permission: String): Boolean {
-    return try {
-        ActivityCompat.checkSelfPermission(
-            ContextManager.app,
-            permission
-        ) == PackageManager.PERMISSION_GRANTED
-    } catch (_: Exception) {
-        false
-    }
+    return ActivityCompat.checkSelfPermission(
+        ContextManager.app,
+        permission
+    ) == PackageManager.PERMISSION_GRANTED
 }
 
 fun isPermissionDenied(permission: String): Boolean {
@@ -32,23 +28,28 @@ fun isPermissionDeniedPermanently(permission: String): Boolean {
     return !showRationale
 }
 
-internal fun areNotificationsEnabled(channelName: String? = null): Boolean {
+internal fun areNotificationsEnabled(channelId: String? = null): Boolean {
     val notificationManager = NotificationManagerCompat.from(ContextManager.app)
     val enabled = notificationManager.areNotificationsEnabled()
     if (!enabled) return false
-    if (channelName.isNullOrEmpty()) {
+    if (channelId.isNullOrEmpty() || Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
         return true
     }
-    val channel = notificationManager.getNotificationChannel(channelName)
+    val channel = notificationManager.getNotificationChannel(channelId)
+
     return if (channel == null) {
         false
     } else {
-        channel.importance > NotificationManagerCompat.IMPORTANCE_NONE
+        channel.importance != NotificationManagerCompat.IMPORTANCE_NONE
     }
 }
 
 internal fun canRequestPackageInstalls(): Boolean {
-    return ContextManager.app.packageManager.canRequestPackageInstalls()
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        ContextManager.app.packageManager.canRequestPackageInstalls()
+    } else {
+        true
+    }
 }
 
 internal fun isExternalStorageManager(useScopedStorageOnAndroid11: Boolean = true): Boolean {

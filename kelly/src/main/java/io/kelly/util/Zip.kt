@@ -5,7 +5,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.zip.ZipInputStream
 
-
 fun File.unzip(destDir: File) {
     if (!exists()) return
 
@@ -21,7 +20,7 @@ fun File.unzip(destDir: File) {
             val outputFile = File(destDir, entry.name)
 
             if (!outputFile.canonicalPath.startsWith(destCanonicalPath)) {
-                throw SecurityException("Zip Slip attack detected: ${entry.name}")
+                throw SecurityException()
             }
 
             if (entry.isDirectory) {

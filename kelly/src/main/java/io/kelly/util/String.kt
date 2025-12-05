@@ -3,7 +3,6 @@ package io.kelly.util
 import android.webkit.MimeTypeMap
 import java.util.Locale
 
-
 val String.extension: String?
     get() {
         val url = this
