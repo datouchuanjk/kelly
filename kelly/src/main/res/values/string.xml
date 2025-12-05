@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="paging_loading">Loading</string>
+    <string name="paging_retry">Click to retry</string>
+    <string name="paging_refresh">Click to refresh</string>
+    <string name="paging_no_more_data">No more</string>
+</resources>
