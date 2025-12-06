@@ -52,7 +52,7 @@ interface PagingStateContent {
     fun NotLoading()
 }
 
-class DefaultPagingStateContent(isInDark: Boolean) : PagingStateContent {
+internal class DefaultPagingStateContent(isInDark: Boolean) : PagingStateContent {
     private val color = if(isInDark) Color.White else Color(0xff333333)
     @Composable
     override fun Skeleton() {

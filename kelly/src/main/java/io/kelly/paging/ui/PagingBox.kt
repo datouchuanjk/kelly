@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import io.kelly.paging.LoadState
 import io.kelly.paging.Paging
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PagingBox(
     modifier: Modifier = Modifier,
