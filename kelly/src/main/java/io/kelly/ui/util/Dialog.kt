@@ -1,4 +1,4 @@
-package io.kelly.util.composable
+package io.kelly.ui.util
 
 import android.view.Window
 import android.view.WindowManager
@@ -10,7 +10,6 @@ import androidx.compose.ui.window.DialogWindowProvider
 val dialogWindow: Window?
     @Composable
     get() = (LocalView.current.parent as? DialogWindowProvider)?.window
-
 
 private fun Window.updateAttributes(block: WindowManager.LayoutParams.() -> Unit) {
     val attributes = this.attributes

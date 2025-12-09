@@ -2,6 +2,7 @@ package io.kelly.util
 
 import android.net.Uri
 import android.webkit.MimeTypeMap
+import androidx.annotation.WorkerThread
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileInputStream
@@ -42,8 +43,8 @@ val File.totalSize: Long
         return size
     }
 
-val File.md5: String
-    get() {
+@WorkerThread
+fun  File.calculationMd5(): String {
         if (!exists() || !isFile) return ""
         val digest = MessageDigest.getInstance("MD5")
         val buffer = ByteArray(8192)
@@ -57,11 +58,11 @@ val File.md5: String
     }
 
 fun File.toProviderUri(
-    authority: String = "${ContextManager.app.packageName}.fileProvider"
-): Uri = FileProvider.getUriForFile(ContextManager.app, authority, this)
+    authority: String = "${ContextManager.context.packageName}.fileProvider"
+): Uri = FileProvider.getUriForFile(ContextManager.context, authority, this)
 
 
 fun generateTempCacheFile(extension: String): File {
     val ext = extension.trimStart('.')
-    return File(ContextManager.app.cacheDir, "${UUID.randomUUID()}.$ext")
+    return File(ContextManager.context.cacheDir, "${UUID.randomUUID()}.$ext")
 }

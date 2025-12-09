@@ -1,7 +1,6 @@
 package io.kelly.util
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.os.Build
 import androidx.annotation.DrawableRes
@@ -14,12 +13,12 @@ fun buildNotification(
     channelId: String,
     title: String,
     content: String,
-    @DrawableRes smallIcon: Int = ContextManager.app.applicationInfo.icon,
+    @DrawableRes smallIcon: Int = ContextManager.context.applicationInfo.icon,
     priority: Int = NotificationCompat.PRIORITY_DEFAULT,
     autoCancel: Boolean = true,
     buildAction: NotificationCompat.Builder.() -> Unit = {}
 ): Notification {
-    return NotificationCompat.Builder(ContextManager.app, channelId)
+    return NotificationCompat.Builder(ContextManager.context, channelId)
         .setContentTitle(title)
         .setContentText(content)
         .setSmallIcon(smallIcon)
@@ -31,7 +30,7 @@ fun buildNotification(
 
 @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
 fun Notification.notify(id: Int) {
-    val manager = NotificationManagerCompat.from(ContextManager.app)
+    val manager = NotificationManagerCompat.from(ContextManager.context)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         areNotificationsEnabled(channelId)
     } else {
@@ -45,7 +44,7 @@ fun Notification.notify(id: Int) {
 }
 
 fun cancelNotification(id: Int) {
-    NotificationManagerCompat.from(ContextManager.app).cancel(id)
+    NotificationManagerCompat.from(ContextManager.context).cancel(id)
 }
 
 fun buildNotificationChannel(
@@ -55,7 +54,7 @@ fun buildNotificationChannel(
     description: String? = null,
     buildAction: NotificationChannelCompat.Builder.() -> Unit = {}
 ) {
-    val manager = NotificationManagerCompat.from(ContextManager.app)
+    val manager = NotificationManagerCompat.from(ContextManager.context)
     val channelBuilder = NotificationChannelCompat.Builder(channelId, importance)
         .setName(channelName)
     if (description != null) {
@@ -69,6 +68,6 @@ fun buildNotificationChannel(
 }
 
 fun deleteNotificationChannel(channelId: String) {
-    val manager = NotificationManagerCompat.from(ContextManager.app)
+    val manager = NotificationManagerCompat.from(ContextManager.context)
     manager.deleteNotificationChannel(channelId)
 }

@@ -1,4 +1,4 @@
-package io.kelly.util.composable
+package io.kelly.ui.util
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

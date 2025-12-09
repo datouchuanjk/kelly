@@ -11,18 +11,18 @@ fun Context.initKelly() {
 }
 
 internal object ContextManager {
-    lateinit var app: Application
+    lateinit var context: Application
         private set
 
     internal var resumedActivity by WeakDelegate<Activity>()
         private set
 
     val sharedPreferences: SharedPreferences by lazy {
-        app.getSharedPreferences("_sp", Context.MODE_PRIVATE)
+        context.getSharedPreferences("_sp", Context.MODE_PRIVATE)
     }
 
     fun init(application: Application) {
-        app = application
+        context = application
         application.registerActivityLifecycleCallbacks(ActivityLifecycleCallbacksImpl)
     }
 

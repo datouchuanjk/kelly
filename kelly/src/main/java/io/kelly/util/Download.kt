@@ -1,12 +1,15 @@
 package io.kelly.util
 
 import android.net.Uri
+import androidx.annotation.WorkerThread
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
+
+@WorkerThread
 fun String.downloadTo(outputFile: File) {
     var connection: HttpURLConnection? = null
     try {
@@ -35,6 +38,7 @@ fun String.downloadTo(outputFile: File) {
     }
 }
 
+@WorkerThread
 fun Uri.downloadTo(outputFile: File) {
     val input = inputStream ?: throw FileNotFoundException()
     try {

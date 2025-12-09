@@ -8,22 +8,22 @@ import android.os.Build
 import android.os.Process
 import android.util.DisplayMetrics
 
-val Context.isMainProcess: Boolean
-    get() = packageName == processName
+val AppPackageName: String
+    get() = ContextManager.context.packageName
 
-val Context.processName: String?
+val AppProcessName: String?
     get() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             return Application.getProcessName()
         }
-        return getSystemService(ActivityManager::class.java)
+        return ContextManager.context.getSystemService(ActivityManager::class.java)
             ?.runningAppProcesses
             ?.find { it.pid == Process.myPid() }
             ?.processName
     }
 
 
-val Context.versionCode: Long
+val AppVersionCode: Long
     get() = try {
         val pi = getPackageInfoCompat()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -32,11 +32,10 @@ val Context.versionCode: Long
             pi.versionCode.toLong()
         }
     } catch (_: Exception) {
-        -1L
+        0
     }
 
-
-val Context.versionName: String
+val AppVersionName: String
     get() = try {
         getPackageInfoCompat().versionName.orEmpty()
     } catch (_: Exception) {
@@ -44,11 +43,14 @@ val Context.versionName: String
     }
 
 
-private fun Context.getPackageInfoCompat() =
+private fun getPackageInfoCompat() =
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+        ContextManager.context.packageManager.getPackageInfo(
+            ContextManager.context.packageName,
+            PackageManager.PackageInfoFlags.of(0)
+        )
     } else {
-        packageManager.getPackageInfo(packageName, 0)
+        ContextManager.context.packageManager.getPackageInfo(ContextManager.context.packageName, 0)
     }
 
 fun Context.createDensityContext(designWidthDp: Float): Context {

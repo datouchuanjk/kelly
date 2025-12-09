@@ -3,7 +3,6 @@ package io.kelly.util
 import android.content.res.Resources
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.StringRes
 
@@ -19,7 +18,7 @@ internal object SingleToast {
 
     fun toast(@StringRes resId: Int, duration: Int) {
         val text = try {
-            ContextManager.app.getString(resId)
+            ContextManager.context.getString(resId)
         } catch (e: Resources.NotFoundException) {
             e.printStackTrace()
             return
@@ -46,7 +45,7 @@ internal object SingleToast {
         }
 
         try {
-            currentToast = Toast.makeText(ContextManager.app, text, duration).apply {
+            currentToast = Toast.makeText(ContextManager.context, text, duration).apply {
                 show()
             }
         } catch (e: Exception) {

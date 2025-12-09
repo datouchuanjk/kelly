@@ -37,11 +37,11 @@ class RequestNotificationAccess(
         return Intent().apply {
             if (areNotificationsEnabled()) {
                 action = Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
-                putExtra(Settings.EXTRA_APP_PACKAGE, ContextManager.app.packageName)
+                putExtra(Settings.EXTRA_APP_PACKAGE, ContextManager.context.packageName)
                 putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
             } else {
                 action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
-                putExtra(Settings.EXTRA_APP_PACKAGE, ContextManager.app.packageName)
+                putExtra(Settings.EXTRA_APP_PACKAGE, ContextManager.context.packageName)
             }
         }
     }
@@ -143,6 +143,10 @@ class CaptureCameraVideo(
 }
 
 class RequestScreenCapture : ActivityResultContract<Unit, Intent?>() {
+    companion object {
+        var cacheIntent: Intent? = null
+    }
+
     override fun createIntent(
         context: Context,
         input: Unit
@@ -152,10 +156,18 @@ class RequestScreenCapture : ActivityResultContract<Unit, Intent?>() {
             ?: Intent()
     }
 
+    override fun getSynchronousResult(context: Context, input: Unit): SynchronousResult<Intent?>? {
+        if(cacheIntent==null){
+            return null
+        }else{
+            return SynchronousResult(cacheIntent)
+        }
+    }
     override fun parseResult(
         resultCode: Int,
         intent: Intent?
     ): Intent? {
+        cacheIntent = intent
         return intent
     }
 }

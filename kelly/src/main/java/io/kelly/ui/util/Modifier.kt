@@ -1,4 +1,4 @@
-package io.kelly.util.composable
+package io.kelly.ui.util
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

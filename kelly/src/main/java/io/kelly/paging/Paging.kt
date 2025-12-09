@@ -11,6 +11,5 @@ interface Paging<T> {
     operator fun get(index: Int): T
     fun peek(index: Int): T
     val size: Int
-
     fun <R> withMutableSnapshot(action: MutableList<T>.() -> R): R
 }
