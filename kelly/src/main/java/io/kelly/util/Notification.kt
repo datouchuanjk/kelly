@@ -13,7 +13,7 @@ fun buildNotification(
     channelId: String,
     title: String,
     content: String,
-    @DrawableRes smallIcon: Int = ContextManager.context.applicationInfo.icon,
+    @DrawableRes smallIcon: Int,
     priority: Int = NotificationCompat.PRIORITY_DEFAULT,
     autoCancel: Boolean = true,
     buildAction: NotificationCompat.Builder.() -> Unit = {}
@@ -32,15 +32,14 @@ fun buildNotification(
 fun Notification.notify(id: Int) {
     val manager = NotificationManagerCompat.from(ContextManager.context)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        areNotificationsEnabled(channelId)
+        PermissionWrapper.areNotificationsEnabled(channelId)
     } else {
-        areNotificationsEnabled()
+        PermissionWrapper.areNotificationsEnabled()
     }.let {
-        if (!it) {
-            return
+        if (it) {
+            manager.notify(id, this)
         }
     }
-    manager.notify(id, this)
 }
 
 fun cancelNotification(id: Int) {

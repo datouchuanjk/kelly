@@ -18,11 +18,9 @@ fun File.unzip(destDir: File) {
         var entry = zis.nextEntry
         while (entry != null) {
             val outputFile = File(destDir, entry.name)
-
             if (!outputFile.canonicalPath.startsWith(destCanonicalPath)) {
                 throw SecurityException()
             }
-
             if (entry.isDirectory) {
                 outputFile.mkdirs()
             } else {

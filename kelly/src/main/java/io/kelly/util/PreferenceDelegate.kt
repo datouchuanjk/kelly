@@ -46,7 +46,6 @@ internal class PreferenceDelegate<T>(
     private val setter: SharedPreferences.Editor.(String, T) -> SharedPreferences.Editor
 ) : ReadWriteProperty<Any?, T> {
 
-
     override fun getValue(thisRef: Any?, property: KProperty<*>): T {
         return ContextManager.sharedPreferences.getter(property.name, defaultValue) ?: defaultValue
     }

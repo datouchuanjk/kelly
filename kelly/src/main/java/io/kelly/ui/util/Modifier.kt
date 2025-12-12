@@ -29,7 +29,7 @@ fun Modifier.onKeyDelEvent(
     block: () -> Unit
 ): Modifier {
     if (!enabled) return this
-    return this.onKeyEvent { event ->
+    return onKeyEvent { event ->
         if (event.type == KeyEventType.KeyDown && event.key == Key.Backspace) {
             block()
             true

@@ -30,7 +30,6 @@ fun inlineTextContent(
     tint: Color? = null,
     placeholderVerticalAlign: PlaceholderVerticalAlign = PlaceholderVerticalAlign.Center
 ): InlineTextContent {
-
     val density = LocalDensity.current
     val layoutDirection = LocalLayoutDirection.current
 

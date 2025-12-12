@@ -13,13 +13,11 @@ val String.extension: String?
             ?: url.substringBefore('?').substringAfterLast('.', "").lowercase(Locale.getDefault()).takeIf { it.isNotEmpty() }
     }
 
-
 val String.mimeType: String?
     get() {
         val ext = this.extension ?: return null
         return MimeTypeMap.getSingleton().getMimeTypeFromExtension(ext)
     }
-
 
 fun String.filterChinese(): String {
     return filter { it.isChinese }
@@ -33,10 +31,8 @@ fun String.filterDigit(): String {
     return filter { it.isDigit() }
 }
 
-
 internal val Char.isChinese: Boolean
     get() = this in '\u4e00'..'\u9fa5'
-
 
 internal val Char.isEnglish: Boolean
     get() = this in 'a'..'z' || this in 'A'..'Z'

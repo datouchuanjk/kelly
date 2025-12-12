@@ -16,16 +16,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import io.kelly.util.delegatedState
 import io.kelly.util.formattedAdvanced
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 
 
 class AScreen : Screen {
-
 
     @Composable
     override fun Content() {
@@ -58,5 +61,14 @@ class AScreen : Screen {
                 }
             }
         }
+    }
+}
+
+class MainViewModel(
+    val savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    var a by savedStateHandle.delegatedState(0)
+    fun a() {
+            a =2
     }
 }

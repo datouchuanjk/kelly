@@ -62,7 +62,7 @@ val Uri.outputStream: OutputStream?
     }
 
 @WorkerThread
-fun Uri.getDimensions(): Pair<Int, Int> {
+fun Uri.getAspectRatio(): Float {
     query(
         projection = arrayOf(
             MediaStore.MediaColumns.WIDTH,
@@ -73,11 +73,13 @@ fun Uri.getDimensions(): Pair<Int, Int> {
             val wIndex = cursor.getColumnIndex(MediaStore.MediaColumns.WIDTH)
             val hIndex = cursor.getColumnIndex(MediaStore.MediaColumns.HEIGHT)
             if (wIndex != -1 && hIndex != -1) {
-                return cursor.getInt(wIndex) to cursor.getInt(hIndex)
+                val width =cursor.getInt(wIndex)
+                val height  =cursor.getInt(hIndex)
+                return  width.toFloat()/height
             }
         }
     }
-    return 0 to 0
+    return 1f
 }
 
 @WorkerThread

@@ -4,7 +4,7 @@ import android.media.MediaMetadataRetriever
 import androidx.annotation.WorkerThread
 
 @WorkerThread
-fun String.getFirstFrame(): Bitmap? {
+fun String.getFrameAtFirstTime(): Bitmap? {
     if (this.isBlank()) return null
     val retriever = MediaMetadataRetriever()
     return try {

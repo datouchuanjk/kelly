@@ -35,7 +35,7 @@ class RequestNotificationAccess(
         }
 
         return Intent().apply {
-            if (areNotificationsEnabled()) {
+            if (PermissionWrapper.areNotificationsEnabled()) {
                 action = Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
                 putExtra(Settings.EXTRA_APP_PACKAGE, ContextManager.context.packageName)
                 putExtra(Settings.EXTRA_CHANNEL_ID, channelId)
@@ -50,11 +50,11 @@ class RequestNotificationAccess(
         context: Context,
         input: Unit
     ): SynchronousResult<Boolean>? {
-        return SynchronousResult(true).takeIf { areNotificationsEnabled(channelId) }
+        return SynchronousResult(true).takeIf { PermissionWrapper.areNotificationsEnabled(channelId) }
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
-        return areNotificationsEnabled(channelId)
+        return PermissionWrapper.areNotificationsEnabled(channelId)
     }
 }
 
@@ -89,12 +89,12 @@ class RequestStorageAccess(
         input: Unit
     ): SynchronousResult<Boolean>? {
         return SynchronousResult(true).takeIf {
-            isExternalStorageManager(useScopedStorageOnAndroid11)
+            PermissionWrapper.isExternalStorageManager(useScopedStorageOnAndroid11)
         }
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
-        return isExternalStorageManager(useScopedStorageOnAndroid11)
+        return PermissionWrapper.isExternalStorageManager(useScopedStorageOnAndroid11)
     }
 }
 
@@ -144,7 +144,7 @@ class CaptureCameraVideo(
 
 class RequestScreenCapture : ActivityResultContract<Unit, Intent?>() {
     companion object {
-        var cacheIntent: Intent? = null
+        private var cacheIntent: Intent? = null
     }
 
     override fun createIntent(
@@ -157,12 +157,13 @@ class RequestScreenCapture : ActivityResultContract<Unit, Intent?>() {
     }
 
     override fun getSynchronousResult(context: Context, input: Unit): SynchronousResult<Intent?>? {
-        if(cacheIntent==null){
+        if (cacheIntent == null) {
             return null
-        }else{
+        } else {
             return SynchronousResult(cacheIntent)
         }
     }
+
     override fun parseResult(
         resultCode: Int,
         intent: Intent?
